@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html lang="zh-tw">
+	<head>
+		<title>永丞門窗｜理想隔音窗、三合一通風門、防霾紗窗｜台中鋁門窗製造商</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="永丞門窗｜專營理想隔音窗、三合一通風門、AGG防霾紗窗。通過 CNS 國家標準檢驗，品質穩定、專業加工、台中在地推薦，安裝業者一致信賴。">
+		<link rel="icon" href="images/favicon.png" type="image/png">
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" href="assets/css/stylesheet.css"/>
+		<link rel="stylesheet" href="assets/css/mobile.css" media="only screen and (max-width: 768px)"/>
+		<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@type": "LocalBusiness",
+		  "additionalType": "https://schema.org/ManufacturingBusiness",
+		  "name": "永丞門窗",
+		  "image": "https://ycdoor.com.tw/images/logo.png",
+		  "@id": "https://ycdoor.com.tw/",
+		  "url": "https://ycdoor.com.tw/",
+		  "telephone": "+886908659158",
+		  "address": {
+		    "@type": "PostalAddress",
+		    "streetAddress": "台中市大肚區沙田路一段148-9號",
+		    "addressLocality": "台中市",
+		    "postalCode": "43245",
+		    "addressCountry": "TW"
+		  },
+		  "geo": {
+		    "@type": "GeoCoordinates",
+		    "latitude": 24.12,
+		    "longitude": 120.575
+		  },
+		  "openingHoursSpecification": [
+		    {
+		      "@type": "OpeningHoursSpecification",
+		      "dayOfWeek": [
+		        "Monday",
+		        "Tuesday",
+		        "Wednesday",
+		        "Thursday",
+		        "Friday"
+		      ],
+		      "opens": "08:00",
+		      "closes": "17:00"
+		    }
+		  ],
+		  "priceRange": "$$",
+		  "sameAs": [
+		    "https://maps.app.goo.gl/yVXV9Yqr1T6EVQnX8"
+		  ]
+		}
+		</script>
+	</head>
+
+	<!-- main -->
+	<body>
+		<!-- Header -->
+		<header class="header">
+			<h1><a href="/" class="logo"><strong>永丞門窗</strong></a></h1>
+			<nav>
+				<ul>
+					<li><a href="/"><b>首頁</b></a></li>
+					<li><a href="aboutme.html"><b>關於永丞</b></a></li>
+					<li class="dropdown-parent">
+						<span class="opener"><b>產品系列</b></span>
+						<ul class="dropdown">
+							<li><a href="product_window.html"><strong>理想隔音窗</strong></a></li>
+							<li><a href="product_door.html"><strong>三合一通風門</strong></a></li>
+							<li><a href="product_mesh.html"><strong>防霾紗窗</strong></a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		<!-- container -->
+        <div class="calculator">
+            <div class="container">
+                <h2>發票計算機</h2>
+
+                <div class="row">
+                    <label for="net">未稅金額:</label>
+                    <input type="number" id="net" placeholder="輸入未稅價">
+                </div>
+                <div class="row">
+                    <label>稅金:</label>
+                    <span id="tax">0</span>
+                </div>
+                <div class="row">
+                    <label for="gross">含稅金額:</label>
+                    <input type="number" id="gross" placeholder="輸入含稅價">
+                </div>
+                <div class="row">
+                    <label>中文金額:</label>
+                    <span id="chineseAmount">零元整</span>
+                </div>
+            </div>
+        </div>
+
+		<!-- footer -->
+		<footer class="footer">
+			<h2>永丞門窗</h2>
+			<ul class="contact">
+				<li class="row"><h3>聯絡我們</h3></li>
+				<li class="row">
+					<div class="item"><a href="tel:0908659158"><b>TEL:0908-659158</b></a></div>
+					<div class="item"><a href="tel:0426936899"><strong>FAX:(04)2693-6899</strong></a></div>
+				</li>
+				<li class="row">
+					<div class="item"><b><a href="mailto:shucheng0731@gmail.com">shucheng0731@gmail.com</a></b></div>
+					<div class="item"><strong><a href="https://maps.app.goo.gl/yVXV9Yqr1T6EVQnX8">43245 台中市大肚區沙田路一段148-9號</a></strong></div>
+				</li>
+			</ul>				
+		</footer>
+
+        <script>
+            const netInput = document.getElementById("net");
+            const grossInput = document.getElementById("gross");
+            const taxOutput = document.getElementById("tax");
+            const chineseAmount = document.getElementById("chineseAmount");
+
+            const TAX_RATE = 0.05;
+
+            // 數字轉中文金額
+            function numberToChinese(n) {
+                if (!n || n <= 0) return "零元整";
+                const fraction = ['角', '分'];
+                const digit = ['零','壹','貳','參','肆','伍','陸','柒','捌','玖'];
+                const unit = [['元','萬','億'],['','拾','佰','仟']];
+                let head = n < 0 ? '負' : '';
+                n = Math.abs(n);
+
+                let s = '';
+                for (let i = 0; i < fraction.length; i++) {
+                    s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, '');
+                }
+                s = s || '整';
+                n = Math.floor(n);
+
+                for (let i = 0; i < unit[0].length && n > 0; i++) {
+                    let p = '';
+                    for (let j = 0; j < unit[1].length && n > 0; j++) {
+                        p = digit[n % 10] + unit[1][j] + p;
+                        n = Math.floor(n / 10);
+                    }
+                    s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
+                }
+                return head + s.replace(/(零.)*零元/, '元')
+                               .replace(/(零.)+/g, '零')
+                               .replace(/^整$/, '零元整');
+            }
+
+            // 計算邏輯
+            function calculateFromNet() {
+                let net = parseFloat(netInput.value);
+                if (isNaN(net)) return;
+                let tax = Math.round(net * TAX_RATE);
+                let gross = net + tax;
+                taxOutput.textContent = tax;
+                grossInput.value = gross;
+                chineseAmount.textContent = numberToChinese(gross);
+            }
+
+            function calculateFromGross() {
+                let gross = parseFloat(grossInput.value);
+                if (isNaN(gross)) return;
+                let net = Math.round(gross / (1 + TAX_RATE));
+                let tax = gross - net;
+                netInput.value = net;
+                taxOutput.textContent = tax;
+                chineseAmount.textContent = numberToChinese(gross);
+            }
+
+            netInput.addEventListener("input", calculateFromNet);
+            grossInput.addEventListener("input", calculateFromGross);
+        </script>
+	</body>
+</html>
