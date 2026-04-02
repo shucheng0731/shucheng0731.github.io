@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hant">
+	<head>
+		<title>永丞門窗｜價格試算工具 </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="永丞門窗鋁窗報價試算工具。"/>
+		<link rel="icon" href="images/favicon.png" type="image/png" />
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="assets/css/stylesheet.css" />
+		<link rel="stylesheet" href="assets/css/mobile.css" media="only screen and (max-width: 768px)" />
+	</head>
+	<body>
+		<header class="header">
+			<a href="/" class="logo"><b>永丞門窗</b></a>
+			<nav>
+				<ul>
+					<li><a href="/"><b>首頁</b></a></li>
+					<li><a href="aboutme.html"><b>關於永丞</b></a></li>
+					<li class="dropdown-parent">
+						<span class="opener"><b>產品系列</b></span>
+						<ul class="dropdown">
+							<li><a href="product_window.html"><strong>理想隔音窗</strong></a></li>
+							<li><a href="product_door.html"><strong>三合一通風門</strong></a></li>
+							<li><a href="product_mesh.html"><strong>防霾紗窗</strong></a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</header>
+
+		<main class="calculator quote-page">
+			<section class="container quote-shell">
+				<div class="quote-heading">
+					<h2>鋁窗報價試算</h2>
+					<p>手機與電腦皆可使用，輸入條件後即可立即查看報價。</p>
+				</div>
+
+				<form id="quoteForm" class="quote-form" novalidate>
+					<div class="row quote-row">
+						<label for="model">型號</label>
+						<select id="model" name="model"></select>
+					</div>
+
+					<div class="row quote-row">
+						<label for="style">窗型</label>
+						<select id="style" name="style"></select>
+					</div>
+
+					<div class="row quote-row">
+						<label for="color">顏色</label>
+						<select id="color" name="color"></select>
+					</div>
+
+					<div class="row quote-row">
+						<label for="width">寬度 W(cm)</label>
+						<input id="width" name="width" type="number" inputmode="decimal" min="0" step="0.1" placeholder="例如:最小尺寸" />
+					</div>
+
+					<div class="row quote-row">
+						<label for="height">高度 H(cm)</label>
+						<input id="height" name="height" type="number" inputmode="decimal" min="0" step="0.1" placeholder="例如:最小尺寸" />
+					</div>
+
+					<div class="row quote-row quote-row-hidden" id="openingHeightRow">
+						<label for="openingHeight">開天高度 H0(cm)</label>
+						<input id="openingHeight" name="openingHeight" type="number" inputmode="decimal" min="0" step="0.1" placeholder="預設 40" />
+					</div>
+
+					<fieldset class="quote-options">
+						<legend>價格選項</legend>
+						<label class="quote-check"><input type="checkbox" id="dualWheel" />雙輪</label>
+						<label class="quote-check"><input type="checkbox" id="screenMid" />紗中</label>
+						<label class="quote-check"><input type="checkbox" id="windowMid" />內中</label>
+						<label class="quote-check"><input type="checkbox" id="pack" />包裝</label>
+					</fieldset>
+
+					<div class="quote-actions">
+						<button type="submit" class="quote-button">顯示報價</button>
+					</div>
+				</form>
+
+				<div id="quoteError" class="quote-error" hidden></div>
+
+				<section id="quoteResult" class="quote-result" aria-live="polite">
+					<div class="quote-result-main">
+						<p class="quote-kicker">等待輸入</p>
+						<h3>請選擇型號、窗型、顏色並輸入尺寸</h3>
+						<p class="quote-summary">系統會自動套用對應報價表、折價與加價規則。</p>
+					</div>
+					<dl class="quote-facts">
+						<div>
+							<dt>原始表價</dt>
+							<dd>NT$ -</dd>
+						</div>
+						<div>
+							<dt>折後報價</dt>
+							<dd>NT$ -</dd>
+						</div>
+						<div>
+							<dt>報價表</dt>
+							<dd>-</dd>
+						</div>
+						<div>
+							<dt>尺寸</dt>
+							<dd>-</dd>
+						</div>
+					</dl>
+					<div class="quote-adjustments">
+						<strong>價格調整</strong>
+						<ul id="adjustmentList">
+							<li>尚未計算</li>
+						</ul>
+					</div>
+					<p id="quoteNotice" class="quote-notice"></p>
+				</section>
+			</section>
+		</main>
+
+		<footer class="footer">
+			<a href="bill.html" title="發票計算機"><h2>永丞門窗</h2></a>
+			<ul class="contact">
+				<li class="row"><h3>聯絡我們</h3></li>
+				<li class="row">
+					<div class="item"><a href="tel:0908659158"><b>TEL:0908-659158</b></a></div>
+					<div class="item"><a href="tel:0426936899"><strong>FAX:(04)2693-6899</strong></a></div>
+				</li>
+				<li class="row">
+					<div class="item"><b><a href="mailto:shucheng0731@gmail.com">shucheng0731@gmail.com</a></b></div>
+					<div class="item"><strong><a href="https://maps.app.goo.gl/yVXV9Yqr1T6EVQnX8">43245 台中市大肚區沙田路一段148-9號</a></strong></div>
+				</li>
+			</ul>
+		</footer>
+
+		<script src="assets/js/quote-app.js"></script>
+	</body>
+</html>
