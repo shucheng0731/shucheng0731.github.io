@@ -487,3 +487,73 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+.quote-page {
+	height: auto;
+	min-height: 70vh;
+	padding: 12vh 0 4vh;
+}
+
+.quote-shell {
+	width: 94vw;
+	padding: 1.25rem 1rem;
+}
+
+.quote-heading {
+	width: 100%;
+}
+
+.quote-heading h2 {
+	font-size: 1.8rem;
+}
+
+.quote-heading p {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+
+.quote-row {
+	flex-direction: column;
+	align-items: stretch !important;
+}
+
+.quote-row label {
+	flex: initial !important;
+}
+
+.quote-row select,
+.quote-row input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.85rem 0.9rem;
+	font-size: 1rem;
+}
+
+.quote-options {
+	width: 100%;
+	box-sizing: border-box;
+	grid-template-columns: 1fr 1fr;
+}
+
+.quote-result {
+	width: 100%;
+	box-sizing: border-box;
+	grid-template-columns: 1fr;
+	padding: 1rem;
+}
+
+.quote-result h3 {
+	font-size: 1.35rem;
+}
+
+.quote-facts {
+	grid-template-columns: 1fr;
+}
+
+.quote-adjustments ul {
+	flex-direction: column;
+}
+
+.quote-adjustments li {
+	border-radius: 0.8rem;
+}

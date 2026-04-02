@@ -525,3 +525,192 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+.quote-page {
+	min-height: 70vh;
+	height: auto;
+	padding: 14vh 0 4vh;
+}
+
+.quote-shell {
+	width: min(56rem, 92vw);
+	padding: 2rem 2.5rem;
+	gap: 1.5rem;
+}
+
+.quote-heading {
+	width: 100%;
+	text-align: left;
+}
+
+.quote-heading h2 {
+	margin-bottom: 0.5rem;
+}
+
+.quote-heading p {
+	font-size: 1.1rem;
+	line-height: 1.6;
+}
+
+.quote-form {
+	width: 100%;
+}
+
+.quote-row {
+	gap: 1rem;
+}
+
+.quote-row select,
+.quote-row input {
+	flex: 1;
+	padding: 0.75rem 0.9rem;
+	border: 1px solid #c8d2db;
+	border-radius: 0.6rem;
+	font-size: 1.1rem;
+	background: #fff;
+}
+
+.quote-row-hidden {
+	display: none !important;
+}
+
+.quote-options {
+	width: calc(100% - 2rem);
+	margin: 1rem 0;
+	padding: 1rem;
+	border: 1px solid #d5dde5;
+	border-radius: 0.85rem;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0.75rem;
+}
+
+.quote-options legend {
+	padding: 0 0.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: steelblue;
+}
+
+.quote-check {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 1rem;
+}
+
+.quote-actions {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 1rem;
+}
+
+.quote-button {
+	border: none;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #3e7fa2, #6baac7);
+	color: #fff;
+	padding: 0.9rem 2.4rem;
+	font-size: 1.1rem;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.quote-button:hover {
+	filter: brightness(1.05);
+}
+
+.quote-error {
+	width: calc(100% - 2rem);
+	padding: 0.9rem 1rem;
+	border-radius: 0.75rem;
+	background: #fff3f0;
+	border: 1px solid #f0b6aa;
+	color: #9c3f2d;
+	font-size: 1rem;
+}
+
+.quote-result {
+	width: calc(100% - 2rem);
+	padding: 1.5rem;
+	border-radius: 1rem;
+	background: linear-gradient(180deg, #f8fbfd, #eef4f8);
+	border: 1px solid #d8e2ea;
+	display: grid;
+	grid-template-columns: 1.4fr 1fr;
+	gap: 1.25rem 1.5rem;
+}
+
+.quote-kicker {
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	color: steelblue;
+	text-transform: uppercase;
+}
+
+.quote-result h3 {
+	font-size: 1.8rem;
+	margin: 0.25rem 0 0.6rem;
+}
+
+.quote-summary {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+
+.quote-facts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.9rem;
+}
+
+.quote-facts div {
+	padding: 0.9rem;
+	border-radius: 0.85rem;
+	background: rgba(255, 255, 255, 0.75);
+	border: 1px solid #dde6ed;
+}
+
+.quote-facts dt {
+	font-size: 0.9rem;
+	color: #4b6475;
+	margin-bottom: 0.35rem;
+}
+
+.quote-facts dd {
+	font-size: 1.15rem;
+	font-weight: bold;
+}
+
+.quote-adjustments {
+	grid-column: 1 / -1;
+}
+
+.quote-adjustments strong {
+	display: block;
+	margin-bottom: 0.6rem;
+	font-size: 1rem;
+	color: steelblue;
+}
+
+.quote-adjustments ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.quote-adjustments li {
+	padding: 0.55rem 0.8rem;
+	border-radius: 999px;
+	background: #fff;
+	border: 1px solid #d8e2ea;
+	font-size: 0.95rem;
+}
+
+.quote-notice {
+	grid-column: 1 / -1;
+	color: #935d1a;
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
