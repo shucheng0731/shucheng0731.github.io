@@ -332,6 +332,25 @@
 		quoteError.textContent = "";
 	}
 
+	function safeCalculateQuote() {
+		const style = styleSelect.value;
+		const needsOpeningHeight = styleRequiresOpeningHeight(style);
+		if (!widthInput.value.trim() || !heightInput.value.trim()) {
+			clearError();
+			return;
+		}
+		if (needsOpeningHeight && !openingHeightInput.value.trim()) {
+			clearError();
+			return;
+		}
+
+		try {
+			calculateQuote();
+		} catch (error) {
+			showError(error.message || "無法完成報價");
+		}
+	}
+
 	function calculateQuote() {
 		clearError();
 
@@ -371,16 +390,26 @@
 
 	form.addEventListener("submit", (event) => {
 		event.preventDefault();
-		try {
-			calculateQuote();
-		} catch (error) {
-			showError(error.message || "無法完成報價");
-		}
+		safeCalculateQuote();
 	});
 
 	styleSelect.addEventListener("change", () => {
 		updateOpeningHeightVisibility();
 		updateDimensionPlaceholders();
+		safeCalculateQuote();
+	});
+
+	[modelSelect, colorSelect, dualWheelInput, screenMidInput, windowMidInput, packInput].forEach((input) => {
+		input.addEventListener("change", safeCalculateQuote);
+	});
+
+	[widthInput, heightInput, openingHeightInput].forEach((input) => {
+		input.addEventListener("input", safeCalculateQuote);
+		input.addEventListener("change", safeCalculateQuote);
+		input.addEventListener("blur", safeCalculateQuote);
+		input.addEventListener("focus", () => {
+			input.select();
+		});
 	});
 
 	[widthInput, heightInput, openingHeightInput].forEach((input, index, inputs) => {
@@ -401,7 +430,7 @@
 			}
 
 			if (index === inputs.length - 1 || (input === heightInput && !styleRequiresOpeningHeight(styleSelect.value))) {
-				form.requestSubmit();
+				safeCalculateQuote();
 			}
 		});
 	});

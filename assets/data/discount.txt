@@ -44,3 +44,6 @@ free_6D = 2
 
 # 價格 / kg
 price_kg = 290
+
+# 價格頁密碼
+page_password = 0169

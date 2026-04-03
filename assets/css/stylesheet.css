@@ -533,7 +533,7 @@ input[type=number] {
 }
 
 .quote-shell {
-	width: min(56rem, 92vw);
+	width: min(72rem, 94vw);
 	padding: 2rem 2.5rem;
 	gap: 1.5rem;
 }
@@ -552,6 +552,23 @@ input[type=number] {
 	line-height: 1.6;
 }
 
+.quote-layout {
+	width: 100%;
+	display: grid;
+	grid-template-columns: minmax(19rem, 25rem) minmax(24rem, 1fr);
+	align-items: start;
+	gap: 1.5rem;
+}
+
+.quote-panel {
+	min-width: 0;
+}
+
+.quote-panel-form {
+	display: grid;
+	gap: 1rem;
+}
+
 .quote-form {
 	width: 100%;
 }
@@ -563,11 +580,13 @@ input[type=number] {
 .quote-row select,
 .quote-row input {
 	flex: 1;
+	width: 100%;
 	padding: 0.75rem 0.9rem;
 	border: 1px solid #c8d2db;
 	border-radius: 0.6rem;
 	font-size: 1.1rem;
 	background: #fff;
+	box-sizing: border-box;
 }
 
 .quote-row-hidden {
@@ -575,14 +594,15 @@ input[type=number] {
 }
 
 .quote-options {
-	width: calc(100% - 2rem);
-	margin: 1rem 0;
+	width: 90%;
+	margin: 1rem 0 0;
 	padding: 1rem;
 	border: 1px solid #d5dde5;
 	border-radius: 0.85rem;
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 	gap: 0.75rem;
+	box-sizing: border-box;
 }
 
 .quote-options legend {
@@ -622,7 +642,7 @@ input[type=number] {
 }
 
 .quote-error {
-	width: calc(100% - 2rem);
+	width: auto;
 	padding: 0.9rem 1rem;
 	border-radius: 0.75rem;
 	background: #fff3f0;
@@ -632,7 +652,7 @@ input[type=number] {
 }
 
 .quote-result {
-	width: calc(100% - 2rem);
+	width: auto;
 	padding: 1.5rem;
 	border-radius: 1rem;
 	background: linear-gradient(180deg, #f8fbfd, #eef4f8);
@@ -640,6 +660,8 @@ input[type=number] {
 	display: grid;
 	grid-template-columns: 1.4fr 1fr;
 	gap: 1.25rem 1.5rem;
+	position: sticky;
+	top: 13vh;
 }
 
 .quote-kicker {
@@ -713,4 +735,19 @@ input[type=number] {
 	color: #935d1a;
 	font-size: 0.95rem;
 	line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+	.quote-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.quote-options {
+		width: auto;
+		margin-left: 0;
+	}
+
+	.quote-result {
+		position: static;
+	}
 }
