@@ -537,6 +537,7 @@ input[type=number] {
 .quote-row input {
 	flex: 1;
 	width: auto;
+	min-width: 0;
 	box-sizing: border-box;
 	padding: 0.85rem 0.9rem;
 	min-height: 3.1rem;
