@@ -1,6 +1,7 @@
 /* 手機版 header樣式 */
 body {
   font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+  overflow-x: hidden;
 }
 ul{
 	list-style: none;
@@ -495,8 +496,16 @@ input[type=number] {
 }
 
 .quote-shell {
-	width: 90vw;
+	width: calc(100vw - 2rem);
 	padding: 1.25rem 1rem;
+	box-sizing: border-box;
+}
+
+.quote-layout,
+.quote-panel,
+.quote-form,
+.quote-result {
+	min-width: 0;
 }
 
 .quote-heading {
