@@ -1,8 +1,10 @@
 (async function () {
-	const dataResponse = await fetch("assets/data/quote-data.json");
+	const assetDataBase = new URL("../data/", document.currentScript.src);
+
+	const dataResponse = await fetch(new URL("quote-data.json", assetDataBase));
 	const quoteData = await dataResponse.json();
 
-	const discountResponse = await fetch("assets/data/discount.txt");
+	const discountResponse = await fetch(new URL("discount.txt", assetDataBase));
 	const discountText = await discountResponse.text();
 	const discounts = parseDiscountText(discountText);
 
