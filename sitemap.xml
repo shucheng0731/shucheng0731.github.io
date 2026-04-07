@@ -7,24 +7,43 @@
 
 <url>
   <loc>https://ycdoor.com.tw/</loc>
-  <lastmod>2025-09-08</lastmod>
+  <lastmod>2026-04-07</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://ycdoor.com.tw/product_window.html</loc>
-  <lastmod>2025-09-08</lastmod>
+  <loc>https://ycdoor.com.tw/pages/product_window/</loc>
+  <lastmod>2026-04-07</lastmod>
   <priority>0.90</priority>
 </url>
 <url>
-  <loc>https://ycdoor.com.tw/product_door.html</loc>
-  <lastmod>2025-09-08</lastmod>
+  <loc>https://ycdoor.com.tw/pages/product_door/</loc>
+  <lastmod>2026-04-07</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://ycdoor.com.tw/product_mesh.html</loc>
-  <lastmod>2025-09-08</lastmod>
+  <loc>https://ycdoor.com.tw/pages/product_mesh/</loc>
+  <lastmod>2026-04-07</lastmod>
   <priority>0.80</priority>
 </url>
-
+<url>
+  <loc>https://ycdoor.com.tw/pages/product_meshdoor/</loc>
+  <lastmod>2026-04-07</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://ycdoor.com.tw/pages/aboutme/</loc>
+  <lastmod>2026-04-07</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://ycdoor.com.tw/pages/bill/</loc>
+  <lastmod>2026-04-07</lastmod>
+  <priority>0.60</priority>
+</url>
+<url>
+  <loc>https://ycdoor.com.tw/pages/price/</loc>
+  <lastmod>2026-04-07</lastmod>
+  <priority>0.70</priority>
+</url>
 
 </urlset>
