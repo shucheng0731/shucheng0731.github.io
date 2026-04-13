@@ -1,56 +1,93 @@
 const netInput = document.getElementById("net");
 const grossInput = document.getElementById("gross");
 const taxOutput = document.getElementById("tax");
-const chineseAmount = document.getElementById("chineseAmount");
+const amountDisplay = document.getElementById("chineseAmount");
+const amountCells = Array.from(amountDisplay.querySelectorAll(".amount-cell"));
 
 const TAX_RATE = 0.05;
+const MAX_DIGITS = amountCells.length;
+const CHINESE_DIGITS = ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"];
 
-function numberToChinese(n) {
-	if (!n || n <= 0) return "零元整";
-	const fraction = ["角", "分"];
-	const digit = ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"];
-	const unit = [["元", "萬", "億"], ["", "拾", "佰", "仟"]];
-	let head = n < 0 ? "負" : "";
-	n = Math.abs(n);
-
-	let s = "";
-	for (let i = 0; i < fraction.length; i++) {
-		s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, "");
-	}
-	s = s || "整";
-	n = Math.floor(n);
-
-	for (let i = 0; i < unit[0].length && n > 0; i++) {
-		let p = "";
-		for (let j = 0; j < unit[1].length && n > 0; j++) {
-			p = digit[n % 10] + unit[1][j] + p;
-			n = Math.floor(n / 10);
-		}
-		s = p.replace(/(零.)*零$/, "").replace(/^$/, "零") + unit[0][i] + s;
+function sanitizeAmount(value) {
+	if (!Number.isFinite(value) || value < 0) {
+		return 0;
 	}
 
-	return head + s.replace(/(零.)*零元/, "元").replace(/(零.)+/g, "零").replace(/^整$/, "零元整");
+	return Math.floor(value);
+}
+
+function setAmountDisplay(amount) {
+	const safeAmount = sanitizeAmount(amount);
+	const digits = String(safeAmount).slice(0, MAX_DIGITS).padStart(MAX_DIGITS, "0");
+	let firstVisibleIndex = digits.search(/[1-9]/);
+
+	if (firstVisibleIndex === -1) {
+		firstVisibleIndex = MAX_DIGITS - 1;
+	}
+
+	amountCells.forEach((cell, index) => {
+		const digitElement = cell.querySelector(".amount-digit");
+		const isLeadingBlank = index < firstVisibleIndex;
+		const digit = digits[index];
+
+		cell.classList.toggle("amount-cell-empty", isLeadingBlank);
+		cell.classList.toggle("amount-cell-zero", !isLeadingBlank && digit === "0");
+		cell.classList.toggle("amount-cell-filled", !isLeadingBlank && digit !== "0");
+		digitElement.textContent = isLeadingBlank ? "" : CHINESE_DIGITS[Number(digit)];
+	});
+
+	amountDisplay.setAttribute("aria-label", `gross amount ${safeAmount}`);
+}
+
+function clearFromNet() {
+	taxOutput.textContent = "0";
+	grossInput.value = "";
+	setAmountDisplay(0);
+}
+
+function clearFromGross() {
+	netInput.value = "";
+	taxOutput.textContent = "0";
+	setAmountDisplay(0);
 }
 
 function calculateFromNet() {
-	let net = parseFloat(netInput.value);
-	if (isNaN(net)) return;
-	let tax = Math.round(net * TAX_RATE);
-	let gross = net + tax;
-	taxOutput.textContent = tax;
-	grossInput.value = gross;
-	chineseAmount.textContent = numberToChinese(gross);
+	const net = parseFloat(netInput.value);
+
+	if (Number.isNaN(net)) {
+		clearFromNet();
+		return;
+	}
+
+	const safeNet = sanitizeAmount(net);
+	const tax = Math.round(safeNet * TAX_RATE);
+	const gross = safeNet + tax;
+
+	netInput.value = safeNet ? String(safeNet) : "";
+	taxOutput.textContent = String(tax);
+	grossInput.value = String(gross);
+	setAmountDisplay(gross);
 }
 
 function calculateFromGross() {
-	let gross = parseFloat(grossInput.value);
-	if (isNaN(gross)) return;
-	let net = Math.round(gross / (1 + TAX_RATE));
-	let tax = gross - net;
-	netInput.value = net;
-	taxOutput.textContent = tax;
-	chineseAmount.textContent = numberToChinese(gross);
+	const gross = parseFloat(grossInput.value);
+
+	if (Number.isNaN(gross)) {
+		clearFromGross();
+		return;
+	}
+
+	const safeGross = sanitizeAmount(gross);
+	const net = Math.round(safeGross / (1 + TAX_RATE));
+	const tax = safeGross - net;
+
+	grossInput.value = safeGross ? String(safeGross) : "";
+	netInput.value = String(net);
+	taxOutput.textContent = String(tax);
+	setAmountDisplay(safeGross);
 }
 
 netInput.addEventListener("input", calculateFromNet);
 grossInput.addEventListener("input", calculateFromGross);
+
+setAmountDisplay(0);

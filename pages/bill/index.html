@@ -29,7 +29,8 @@
 					<li class="dropdown-parent">
 						<span class="opener"><b>產品系列</b></span>
 						<ul class="dropdown">
-							<li><a href="../product_window/"><strong>理想隔音窗</strong></a></li>
+							<li><a href="../product_1027/"><strong>理想隔音窗</strong></a></li>
+							<li><a href="../product_1060/"><strong>信元氣密窗</strong></a></li>
 							<li><a href="../product_door/"><strong>三合一通風門</strong></a></li>
 							<li><a href="../product_mesh/"><strong>防霾紗窗</strong></a></li>
 							<li><a href="../product_meshdoor/"><strong>金屬網摺疊門</strong></a></li>
@@ -38,6 +39,7 @@
 				</ul>
 			</nav>
 		</header>
+		<main>
 		<!-- container -->
         <div class="calculator">
             <div class="container">
@@ -57,10 +59,48 @@
                 </div>
                 <div class="row">
                     <label>中文金額:</label>
-                    <span id="chineseAmount">零元整</span>
+                    <div id="chineseAmount" class="amount-display" aria-label="發票金額欄位">
+                        <div class="amount-cell amount-cell-empty" data-place="100000000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">億</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="10000000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">仟</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="1000000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">佰</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="100000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">拾</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="10000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">萬</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="1000">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">仟</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="100">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">佰</span>
+                        </div>
+                        <div class="amount-cell amount-cell-empty" data-place="10">
+                            <span class="amount-digit" aria-hidden="true"></span>
+                            <span class="amount-unit">拾</span>
+                        </div>
+                        <div class="amount-cell amount-cell-zero" data-place="1">
+                            <span class="amount-digit" aria-hidden="true">0</span>
+                            <span class="amount-unit">元</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+		</main>
 
 		<!-- footer -->
 		<footer class="footer">

@@ -1,11 +1,19 @@
 (async function () {
 	const assetDataBase = new URL("../data/", document.currentScript.src);
+	const styleCache = new Map();
 
-	const dataResponse = await fetch(new URL("quote-data.json", assetDataBase));
-	const quoteData = await dataResponse.json();
+	const [
+		models,
+		styles,
+		colors,
+		discountText,
+	] = await Promise.all([
+		fetchJson("models.json"),
+		fetchJson("style-options.json"),
+		fetchJson("colors.json"),
+		fetchText("discount.txt"),
+	]);
 
-	const discountResponse = await fetch(new URL("discount.txt", assetDataBase));
-	const discountText = await discountResponse.text();
 	const discounts = parseDiscountText(discountText);
 
 	const form = document.getElementById("quoteForm");
@@ -25,9 +33,83 @@
 	const adjustmentList = document.getElementById("adjustmentList");
 	const quoteNotice = document.getElementById("quoteNotice");
 
-	fillSelect(modelSelect, quoteData.models);
-	fillSelect(styleSelect, quoteData.styles);
-	fillSelect(colorSelect, quoteData.colors, "311");
+	fillSelect(modelSelect, models);
+	fillSelect(styleSelect, styles);
+	fillSelect(colorSelect, colors, "311");
+
+	updateOpeningHeightVisibility();
+	await updateDimensionPlaceholders();
+
+	form.addEventListener("submit", async (event) => {
+		event.preventDefault();
+		await safeCalculateQuote();
+	});
+
+	styleSelect.addEventListener("change", async () => {
+		updateOpeningHeightVisibility();
+		await updateDimensionPlaceholders();
+		await safeCalculateQuote();
+	});
+
+	[modelSelect, colorSelect, dualWheelInput, screenMidInput, windowMidInput, packInput].forEach((input) => {
+		input.addEventListener("change", async () => {
+			await safeCalculateQuote();
+		});
+	});
+
+	[widthInput, heightInput, openingHeightInput].forEach((input) => {
+		input.addEventListener("input", async () => {
+			await safeCalculateQuote();
+		});
+		input.addEventListener("change", async () => {
+			await safeCalculateQuote();
+		});
+		input.addEventListener("blur", async () => {
+			await safeCalculateQuote();
+		});
+		input.addEventListener("focus", () => {
+			input.select();
+		});
+	});
+
+	[widthInput, heightInput, openingHeightInput].forEach((input, index, inputs) => {
+		input.addEventListener("keydown", async (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+
+			if (input === widthInput) {
+				heightInput.focus();
+				heightInput.select();
+				return;
+			}
+
+			if (input === heightInput && styleRequiresOpeningHeight(styleSelect.value)) {
+				openingHeightInput.focus();
+				openingHeightInput.select();
+				return;
+			}
+
+			if (index === inputs.length - 1 || (input === heightInput && !styleRequiresOpeningHeight(styleSelect.value))) {
+				await safeCalculateQuote();
+			}
+		});
+	});
+
+	async function fetchJson(filename) {
+		const response = await fetch(new URL(filename, assetDataBase), { cache: "no-store" });
+		if (!response.ok) {
+			throw new Error(`無法讀取資料：${filename}`);
+		}
+		return response.json();
+	}
+
+	async function fetchText(filename) {
+		const response = await fetch(new URL(filename, assetDataBase), { cache: "no-store" });
+		if (!response.ok) {
+			throw new Error(`無法讀取資料：${filename}`);
+		}
+		return response.text();
+	}
 
 	function parseDiscountText(text) {
 		const result = {};
@@ -68,18 +150,31 @@
 		return style;
 	}
 
+	async function getPriceTable(style) {
+		const priceStyle = classifyStyle(style);
+		if (styleCache.has(priceStyle)) {
+			return styleCache.get(priceStyle);
+		}
+
+		const table = await fetchJson(`styles/${priceStyle}.json`);
+		styleCache.set(priceStyle, table);
+		return table;
+	}
+
 	function parseDimension(value, label) {
 		if (!value.trim()) {
-			throw new Error(`請輸入${label}`);
+			throw new Error(`Please enter ${label}`);
 		}
 
 		const number = Number(value);
 		if (Number.isNaN(number)) {
-			throw new Error(`${label}必須是數字`);
+			throw new Error(`${label} must be a number`);
 		}
+
 		if (number <= 0) {
-			throw new Error(`${label}必須大於 0`);
+			throw new Error(`${label} must be greater than 0`);
 		}
+
 		return number;
 	}
 
@@ -115,19 +210,18 @@
 		return style.includes("F");
 	}
 
-	function updateDimensionPlaceholders() {
-		const priceStyle = classifyStyle(styleSelect.value);
-		const table = quoteData.priceTables[priceStyle];
+	async function updateDimensionPlaceholders() {
+		const table = await getPriceTable(styleSelect.value);
 		if (!table || !table.widths?.length || !table.heights?.length) {
-			widthInput.placeholder = "例如:最小尺寸";
-			heightInput.placeholder = "例如:最小尺寸";
+			widthInput.placeholder = "例如：最小尺寸";
+			heightInput.placeholder = "例如：最小尺寸";
 			return;
 		}
 
 		const minWidth = Math.min(...table.widths);
 		const minHeight = Math.min(...table.heights);
-		widthInput.placeholder = `例如:最小尺寸 ${minWidth}`;
-		heightInput.placeholder = `例如:最小尺寸 ${minHeight}`;
+		widthInput.placeholder = `例如：最小尺寸 ${minWidth}`;
+		heightInput.placeholder = `例如：最小尺寸 ${minHeight}`;
 	}
 
 	function updateOpeningHeightVisibility() {
@@ -146,12 +240,9 @@
 		return sorted.find((item) => item >= value);
 	}
 
-	function getBasePrice(style, width, height) {
-		const priceStyle = classifyStyle(style);
-		const table = quoteData.priceTables[priceStyle];
-		if (!table) {
-			throw new Error(`找不到窗型 ${style} 對應的報價表`);
-		}
+	async function getBasePrice(style, width, height) {
+		const table = await getPriceTable(style);
+		const priceStyle = table.style;
 
 		const widthCeil = Math.ceil(width / 10) * 10;
 		const heightCeil = Math.ceil(height / 10) * 10;
@@ -160,17 +251,19 @@
 
 		const notices = [];
 		if (quotedWidth !== widthCeil) {
-			const mode = quotedWidth < widthCeil ? "最大值" : "最小值";
-			notices.push(`寬度超出報價表，已改用${mode} ${quotedWidth} cm`);
+			notices.push(`寬度超出牌價表範圍，改以 ${quotedWidth} cm 計算`);
 		}
 		if (quotedHeight !== heightCeil) {
-			const mode = quotedHeight < heightCeil ? "最大值" : "最小值";
-			notices.push(`高度超出報價表，已改用${mode} ${quotedHeight} cm`);
+			notices.push(`高度超出牌價表範圍，改以 ${quotedHeight} cm 計算`);
 		}
 
 		const rowIndex = table.heights.indexOf(quotedHeight);
 		const columnIndex = table.widths.indexOf(quotedWidth);
-		const basePrice = table.values[rowIndex][columnIndex];
+		const basePrice = table.values[rowIndex]?.[columnIndex];
+
+		if (typeof basePrice !== "number") {
+			throw new Error(`找不到 ${priceStyle} 對應尺寸的牌價`);
+		}
 
 		return {
 			basePrice,
@@ -181,14 +274,38 @@
 		};
 	}
 
+	function getHangingRodCount(style) {
+		const match = style.match(/(\d)F/);
+		if (!match) {
+			return 0;
+		}
+
+		const rawCount = Number(match[1]);
+		if (Number.isNaN(rawCount) || rawCount <= 0) {
+			return 0;
+		}
+
+		return Math.max(0, rawCount - 1);
+	}
+
+	function getHangingRodWeightKey(model) {
+		if (model.includes("1027")) {
+			return "1805_Weight_M";
+		}
+
+		if (model.includes("827")) {
+			return "8805_Weight_M";
+		}
+
+		return "";
+	}
+
 	function getHangingRodPrice(model, style, openingHeight) {
 		if (openingHeight == null) {
 			return 0;
 		}
 
-		const styleCounts = quoteData.hangingRodCounts?.[style] || {};
-		const baseModel = model.includes("1027") ? "1027" : model.includes("827") ? "827" : model;
-		const rawCount = styleCounts[baseModel] || 0;
+		const rawCount = getHangingRodCount(style);
 		if (rawCount <= 0) {
 			return 0;
 		}
@@ -199,7 +316,11 @@
 			return 0;
 		}
 
-		const weightKey = baseModel === "1027" ? "1805_Weight_M" : "8805_Weight_M";
+		const weightKey = getHangingRodWeightKey(model);
+		if (!weightKey) {
+			return 0;
+		}
+
 		const partWeight = discounts[weightKey] || 0;
 		const priceKg = discounts.price_kg || 0;
 		return (openingHeight / 100) * chargeCount * partWeight * priceKg;
@@ -221,6 +342,13 @@
 		return openingHeight < 40 ? price : -price;
 	}
 
+	function getSModelPrice(width) {
+		const roundedWidth = Math.ceil(width / 50) * 50;
+		const sWeightPer50 = discounts["1027S"] || 0;
+		const priceKg = discounts.price_kg || 0;
+		return roundedWidth * (sWeightPer50 / 50) * priceKg;
+	}
+
 	function applyAdjustments(basePrice, model, style, color, width, openingHeight, options) {
 		let finalPrice = Number(basePrice);
 		const adjustments = [];
@@ -228,58 +356,84 @@
 		if (model.includes("1027")) {
 			const factor = discounts.model_1027 ?? 1;
 			finalPrice *= factor;
-			if (factor !== 1) adjustments.push({ name: `型號 ${model}`, kind: "factor", value: factor });
+			if (factor !== 1) {
+				adjustments.push({ name: `${model} 牌折`, kind: "factor", value: factor });
+			}
 		}
 
 		if (model.includes("827")) {
 			const factor = discounts.model_827 ?? 1;
 			finalPrice *= factor;
-			if (factor !== 1) adjustments.push({ name: `型號 ${model}`, kind: "factor", value: factor });
+			if (factor !== 1) {
+				adjustments.push({ name: `${model} 牌折`, kind: "factor", value: factor });
+			}
 		}
 
 		if (model === "1027T") {
 			const factor = discounts[getTModelKey(style)] ?? 1;
 			finalPrice *= factor;
-			if (factor !== 1) adjustments.push({ name: "1027T 窗型補正", kind: "factor", value: factor });
+			if (factor !== 1) {
+				adjustments.push({ name: "1027T T窗加成", kind: "factor", value: factor });
+			}
 		}
 
 		const colorFactor = color === "311" ? discounts.color_311 ?? 1 : discounts.color_not_311 ?? 1;
 		finalPrice *= colorFactor;
-		if (colorFactor !== 1) adjustments.push({ name: `顏色 ${color}`, kind: "factor", value: colorFactor });
+		if (colorFactor !== 1) {
+			adjustments.push({ name: `顏色 ${color}`, kind: "factor", value: colorFactor });
+		}
 
 		if (options.pack) {
 			const factor = discounts.pack ?? 1;
 			finalPrice *= factor;
-			if (factor !== 1) adjustments.push({ name: "包裝", kind: "factor", value: factor });
+			if (factor !== 1) {
+				adjustments.push({ name: "包裝", kind: "factor", value: factor });
+			}
+		}
+
+		if (model === "1027S") {
+			const addPrice = getSModelPrice(width);
+			finalPrice += addPrice;
+			if (addPrice) {
+				adjustments.push({ name: "1027S S型材料", kind: "add", value: addPrice });
+			}
 		}
 
 		if (options.dualWheel) {
 			const addPrice = (discounts[getWheelKey(style)] ?? 0) * 50;
 			finalPrice += addPrice;
-			if (addPrice) adjustments.push({ name: "雙輪加價", kind: "add", value: addPrice });
+			if (addPrice) {
+				adjustments.push({ name: "雙輪", kind: "add", value: addPrice });
+			}
 		}
 
 		if (options.screenMid) {
 			const addPrice = (width / 100 / 2) * (discounts.SCREEN_Weight_M ?? 0) * (discounts.price_kg ?? 0);
 			finalPrice += addPrice;
-			if (addPrice) adjustments.push({ name: "紗中加價", kind: "add", value: addPrice });
+			if (addPrice) {
+				adjustments.push({ name: "紗中", kind: "add", value: addPrice });
+			}
 		}
 
 		if (options.windowMid) {
 			const addPrice = (width / 100) * (discounts.Window_Weight_M ?? 0) * (discounts.price_kg ?? 0);
 			finalPrice += addPrice;
-			if (addPrice) adjustments.push({ name: "內中加價", kind: "add", value: addPrice });
+			if (addPrice) {
+				adjustments.push({ name: "內中", kind: "add", value: addPrice });
+			}
 		}
 
 		const hangingRodPrice = getHangingRodPrice(model, style, openingHeight);
 		finalPrice += hangingRodPrice;
-		if (hangingRodPrice) adjustments.push({ name: "吊管加價", kind: "add", value: hangingRodPrice });
+		if (hangingRodPrice) {
+			adjustments.push({ name: "吊管加價", kind: "add", value: hangingRodPrice });
+		}
 
 		const openingAdjustmentPrice = getOpeningAdjustmentPrice(style, openingHeight);
 		finalPrice += openingAdjustmentPrice;
 		if (openingAdjustmentPrice) {
 			adjustments.push({
-				name: openingAdjustmentPrice > 0 ? "開天增重加價" : "開天減重調價",
+				name: openingAdjustmentPrice > 0 ? "開天高度加價" : "開天高度減價",
 				kind: "add",
 				value: openingAdjustmentPrice,
 			});
@@ -295,7 +449,7 @@
 		const [kicker, title, summary] = quoteResult.querySelectorAll(".quote-result-main > *");
 		const factValues = quoteResult.querySelectorAll(".quote-facts dd");
 
-		kicker.textContent = "報價完成";
+		kicker.textContent = "試算結果";
 		title.textContent = `${result.model} / ${result.style} / ${result.color}`;
 		summary.textContent = result.openingHeight != null
 			? `尺寸 ${result.quotedWidth} x ${result.quotedHeight} cm，開天高度 ${result.openingHeight.toFixed(1)} cm`
@@ -321,7 +475,9 @@
 			});
 		}
 
-		quoteNotice.textContent = result.notices.length ? result.notices.join("；") : "已依條件完成報價";
+		quoteNotice.textContent = result.notices.length
+			? result.notices.join("；")
+			: "已依目前牌價與折數完成試算";
 	}
 
 	function showError(message) {
@@ -334,7 +490,7 @@
 		quoteError.textContent = "";
 	}
 
-	function safeCalculateQuote() {
+	async function safeCalculateQuote() {
 		const style = styleSelect.value;
 		const needsOpeningHeight = styleRequiresOpeningHeight(style);
 		if (!widthInput.value.trim() || !heightInput.value.trim()) {
@@ -347,13 +503,13 @@
 		}
 
 		try {
-			calculateQuote();
+			await calculateQuote();
 		} catch (error) {
-			showError(error.message || "無法完成報價");
+			showError(error.message || "報價試算失敗");
 		}
 	}
 
-	function calculateQuote() {
+	async function calculateQuote() {
 		clearError();
 
 		const model = modelSelect.value;
@@ -372,7 +528,7 @@
 			pack: packInput.checked,
 		};
 
-		const base = getBasePrice(style, width, height);
+		const base = await getBasePrice(style, width, height);
 		const adjusted = applyAdjustments(base.basePrice, model, style, color, width, openingHeight, options);
 
 		renderResult({
@@ -389,54 +545,4 @@
 			notices: base.notices,
 		});
 	}
-
-	form.addEventListener("submit", (event) => {
-		event.preventDefault();
-		safeCalculateQuote();
-	});
-
-	styleSelect.addEventListener("change", () => {
-		updateOpeningHeightVisibility();
-		updateDimensionPlaceholders();
-		safeCalculateQuote();
-	});
-
-	[modelSelect, colorSelect, dualWheelInput, screenMidInput, windowMidInput, packInput].forEach((input) => {
-		input.addEventListener("change", safeCalculateQuote);
-	});
-
-	[widthInput, heightInput, openingHeightInput].forEach((input) => {
-		input.addEventListener("input", safeCalculateQuote);
-		input.addEventListener("change", safeCalculateQuote);
-		input.addEventListener("blur", safeCalculateQuote);
-		input.addEventListener("focus", () => {
-			input.select();
-		});
-	});
-
-	[widthInput, heightInput, openingHeightInput].forEach((input, index, inputs) => {
-		input.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-
-			if (input === widthInput) {
-				heightInput.focus();
-				heightInput.select();
-				return;
-			}
-
-			if (input === heightInput && styleRequiresOpeningHeight(styleSelect.value)) {
-				openingHeightInput.focus();
-				openingHeightInput.select();
-				return;
-			}
-
-			if (index === inputs.length - 1 || (input === heightInput && !styleRequiresOpeningHeight(styleSelect.value))) {
-				safeCalculateQuote();
-			}
-		});
-	});
-
-	updateOpeningHeightVisibility();
-	updateDimensionPlaceholders();
 })();
