@@ -1,0 +1,88 @@
+.calculator.quote-page {
+	height: auto;
+	min-height: 70vh;
+	padding: 12vh 0 4vh;
+	width: 100%;
+}
+
+.calculator.quote-page > .container.quote-shell {
+	width: calc(100vw - 2rem);
+	padding: 1.25rem 1rem;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.quote-page .quote-layout,
+.quote-page .quote-panel,
+.quote-page .quote-form,
+.quote-page .quote-result {
+	min-width: 0;
+}
+
+.quote-page .quote-heading {
+	width: 100%;
+}
+
+.quote-page .quote-heading h2 {
+	font-size: 1.8rem;
+}
+
+.quote-page .quote-heading p {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+
+.quote-page .quote-row {
+	flex-direction: row;
+	align-items: center !important;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.quote-page .quote-row label {
+	flex: 0 0 6.5rem !important;
+	font-size: 0.95rem;
+}
+
+.quote-page .quote-row select,
+.quote-page .quote-row input {
+	flex: 1;
+	width: auto;
+	min-width: 0;
+	box-sizing: border-box;
+	padding: 0.85rem 0.9rem;
+	min-height: 3.1rem;
+	height: 3.1rem;
+	font-size: 1rem;
+}
+
+.quote-page .quote-options {
+	width: 100%;
+	box-sizing: border-box;
+	grid-template-columns: 1fr 1fr;
+}
+
+.quote-page .quote-result {
+	width: 100%;
+	box-sizing: border-box;
+	grid-template-columns: 1fr;
+	padding: 1rem;
+}
+
+.quote-page .quote-result h3 {
+	font-size: 1.35rem;
+}
+
+.quote-page .quote-facts {
+	grid-template-columns: 1fr;
+}
+
+.quote-page .quote-adjustments ul {
+	flex-direction: column;
+}
+
+.quote-page .quote-adjustments li {
+	border-radius: 0.8rem;
+}

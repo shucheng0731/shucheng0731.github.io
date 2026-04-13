@@ -1,0 +1,314 @@
+body.price-locked {
+	overflow: hidden;
+}
+
+.price-lock {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	background: rgba(15, 23, 42, 0.55);
+	backdrop-filter: blur(6px);
+	z-index: 20000;
+}
+
+.price-lock[hidden] {
+	display: none;
+}
+
+.price-lock .price-lock-card {
+	width: min(100%, 420px);
+	padding: 2rem;
+	border-radius: 20px;
+	background: #ffffff;
+	box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+	text-align: center;
+}
+
+.price-lock .price-lock-card h2 {
+	margin-bottom: 0.75rem;
+	font-size: 2rem;
+	color: steelblue;
+}
+
+.price-lock .price-lock-card p {
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+.price-lock .price-lock-input {
+	display: block;
+	width: 100%;
+	padding: 0.9rem 1rem;
+	border: 1px solid #cbd5e1;
+	border-radius: 12px;
+	font-size: 1.1rem;
+	text-align: center;
+	letter-spacing: 0.18em;
+	box-sizing: border-box;
+}
+
+.price-lock .price-lock-button {
+	display: block;
+	width: 100%;
+	margin-top: 0.9rem;
+	padding: 0.9rem 1rem;
+	border: none;
+	border-radius: 12px;
+	background: steelblue;
+	color: #fff;
+	font-size: 1rem;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.price-lock .price-lock-button:hover {
+	background: #356f97;
+}
+
+.price-lock .price-lock-error {
+	min-height: 1.5em;
+	margin-top: 0.85rem;
+	font-size: 0.95rem;
+	color: #c62828;
+}
+
+.calculator.quote-page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 70vh;
+	height: auto;
+	padding: 14vh 0 4vh;
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
+.calculator.quote-page > .container.quote-shell {
+	width: min(72rem, 94vw);
+	padding: 2rem 2.5rem;
+	gap: 1.5rem;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.quote-page .quote-heading {
+	width: 100%;
+	text-align: left;
+}
+
+.quote-page .quote-heading h2 {
+	margin-bottom: 0.5rem;
+}
+
+.quote-page .quote-heading p {
+	font-size: 1.1rem;
+	line-height: 1.6;
+}
+
+.quote-page .quote-layout {
+	width: 100%;
+	display: grid;
+	grid-template-columns: minmax(19rem, 25rem) minmax(24rem, 1fr);
+	align-items: start;
+	gap: 1.5rem;
+}
+
+.quote-page .quote-panel {
+	min-width: 0;
+}
+
+.quote-page .quote-panel-form {
+	display: grid;
+	gap: 1rem;
+}
+
+.quote-page .quote-form {
+	width: 100%;
+}
+
+.quote-page .quote-row {
+	gap: 1rem;
+}
+
+.quote-page .quote-row select,
+.quote-page .quote-row input {
+	flex: 1;
+	width: 100%;
+	padding: 0.75rem 0.9rem;
+	border: 1px solid #c8d2db;
+	border-radius: 0.6rem;
+	font-size: 1.1rem;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+.quote-page .quote-row-hidden {
+	display: none !important;
+}
+
+.quote-page .quote-options {
+	width: 90%;
+	margin: 1rem 0 0;
+	padding: 1rem;
+	border: 1px solid #d5dde5;
+	border-radius: 0.85rem;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0.75rem;
+	box-sizing: border-box;
+}
+
+.quote-page .quote-options legend {
+	padding: 0 0.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: steelblue;
+}
+
+.quote-page .quote-check {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 1rem;
+}
+
+.quote-page .quote-actions {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 1rem;
+}
+
+.quote-page .quote-button {
+	border: none;
+	border-radius: 999px;
+	background: linear-gradient(135deg, #3e7fa2, #6baac7);
+	color: #fff;
+	padding: 0.9rem 2.4rem;
+	font-size: 1.1rem;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.quote-page .quote-button:hover {
+	filter: brightness(1.05);
+}
+
+.quote-page .quote-error {
+	width: auto;
+	padding: 0.9rem 1rem;
+	border-radius: 0.75rem;
+	background: #fff3f0;
+	border: 1px solid #f0b6aa;
+	color: #9c3f2d;
+	font-size: 1rem;
+}
+
+.quote-page .quote-result {
+	width: auto;
+	padding: 1.5rem;
+	border-radius: 1rem;
+	background: linear-gradient(180deg, #f8fbfd, #eef4f8);
+	border: 1px solid #d8e2ea;
+	display: grid;
+	grid-template-columns: 1.4fr 1fr;
+	gap: 1.25rem 1.5rem;
+	position: sticky;
+	top: 13vh;
+}
+
+.quote-page .quote-kicker {
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	color: steelblue;
+	text-transform: uppercase;
+}
+
+.quote-page .quote-result h3 {
+	font-size: 1.8rem;
+	margin: 0.25rem 0 0.6rem;
+}
+
+.quote-page .quote-summary {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+
+.quote-page .quote-facts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.9rem;
+}
+
+.quote-page .quote-facts div {
+	padding: 0.9rem;
+	border-radius: 0.85rem;
+	background: rgba(255, 255, 255, 0.75);
+	border: 1px solid #dde6ed;
+}
+
+.quote-page .quote-facts dt {
+	font-size: 0.9rem;
+	color: #4b6475;
+	margin-bottom: 0.35rem;
+}
+
+.quote-page .quote-facts dd {
+	font-size: 1.15rem;
+	font-weight: bold;
+}
+
+.quote-page .quote-adjustments {
+	grid-column: 1 / -1;
+}
+
+.quote-page .quote-adjustments strong {
+	display: block;
+	margin-bottom: 0.6rem;
+	font-size: 1rem;
+	color: steelblue;
+}
+
+.quote-page .quote-adjustments ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+}
+
+.quote-page .quote-adjustments li {
+	padding: 0.55rem 0.8rem;
+	border-radius: 999px;
+	background: #fff;
+	border: 1px solid #d8e2ea;
+	font-size: 0.95rem;
+}
+
+.quote-page .quote-notice {
+	grid-column: 1 / -1;
+	color: #935d1a;
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+	.quote-page .quote-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.quote-page .quote-options {
+		width: auto;
+		margin-left: 0;
+	}
+
+	.quote-page .quote-result {
+		position: static;
+	}
+}

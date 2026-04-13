@@ -1,0 +1,59 @@
+2D_W = 80
+2D_H = 60
+2D_W_10cm = 153
+2D_H_10cm = 189
+2D_price = 2982
+
+F_2D_W = 80
+F_2D_H = 140
+F_2D_W_10cm = 211
+F_2D_H_10cm = 189
+F_2D_price = 4616
+
+2D_2D_W = 80
+2D_2D_H = 140
+2D_2D_W_10cm = 293
+2D_2D_H_10cm = 189
+2D_2D_price = 6248
+
+4D_W = 220
+4D_H = 60
+4D_W_10cm = 153
+4D_H_10cm = 338
+4D_price = 6584
+
+F_4D_W = 220
+F_4D_H = 140
+F_4D_W_10cm = 211
+F_4D_H_10cm = 338
+F_4D_price = 9864
+
+4D_4D_W = 220
+4D_4D_H = 140
+4D_4D_W_10cm = 293
+4D_4D_H_10cm = 338
+4D_4D_price = 13605
+
+3D_W = 180
+3D_H = 60
+3D_W_10cm = 153
+3D_H_10cm = 284
+3D_price = 5547
+
+F_3D_W = 180
+F_3D_H = 140
+F_3D_W_10cm = 211
+F_3D_H_10cm = 284
+F_3D_price = 8186
+
+6D_W = 320
+6D_H = 60
+6D_W_10cm = 150
+6D_H_10cm = 464
+6D_price = 8993
+
+F_6D_W = 320
+F_6D_H = 140
+F_6D_W_10cm = 208
+F_6D_H_10cm = 463
+F_6D_price = 13539
