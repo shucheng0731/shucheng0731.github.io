@@ -23,6 +23,10 @@
 	const dualWheelInput = document.getElementById("dualWheel");
 	const screenMidInput = document.getElementById("screenMid");
 	const windowMidInput = document.getElementById("windowMid");
+	const outerTopMaterialInput = document.getElementById("outerTopMaterial");
+	const outerTopMaterialOption = document.getElementById("outerTopMaterialOption");
+	const outerFixedMaterialInput = document.getElementById("outerFixedMaterial");
+	const outerFixedMaterialOption = document.getElementById("outerFixedMaterialOption");
 	const packInput = document.getElementById("pack");
 	const quoteError = document.getElementById("quoteError");
 	const quoteResult = document.getElementById("quoteResult");
@@ -33,7 +37,7 @@
 	fillSelect(styleSelect, styles);
 	fillSelect(colorSelect, colors, "311");
 
-	updateOpeningHeightVisibility();
+	updateStyleDependentFields();
 	updateDimensionPlaceholders();
 
 	form.addEventListener("submit", async (event) => {
@@ -42,12 +46,25 @@
 	});
 
 	styleSelect.addEventListener("change", async () => {
-		updateOpeningHeightVisibility();
+		updateStyleDependentFields();
 		updateDimensionPlaceholders();
 		await safeCalculateQuote();
 	});
 
-	[modelSelect, colorSelect, dualWheelInput, screenMidInput, windowMidInput, packInput].forEach((input) => {
+	modelSelect.addEventListener("change", async () => {
+		updateStyleDependentFields();
+		await safeCalculateQuote();
+	});
+
+	[
+		colorSelect,
+		dualWheelInput,
+		screenMidInput,
+		windowMidInput,
+		outerTopMaterialInput,
+		outerFixedMaterialInput,
+		packInput,
+	].forEach((input) => {
 		input.addEventListener("change", async () => {
 			await safeCalculateQuote();
 		});
@@ -244,18 +261,49 @@
 		return style.includes("F");
 	}
 
+	function styleHasF(style) {
+		return style.includes("F");
+	}
+
+	function styleHasLeadingF(style) {
+		const firstSegment = style.split("_", 1)[0];
+		return firstSegment.includes("F");
+	}
+
+	function styleHasTrailingOrNoF(style) {
+		return !styleHasF(style) || !styleHasLeadingF(style);
+	}
+
 	function updateDimensionPlaceholders() {
 		const config = getPriceConfig(styleSelect.value);
 		widthInput.placeholder = `建議起始寬度 ${config.baseWidth}`;
 		heightInput.placeholder = `建議起始高度 ${config.baseHeight}`;
 	}
 
-	function updateOpeningHeightVisibility() {
-		if (styleRequiresOpeningHeight(styleSelect.value)) {
+	function updateStyleDependentFields() {
+		const style = styleSelect.value;
+		const model = modelSelect.value;
+		const supportsMaterialOptions = model === "1027S" || model === "1027T";
+
+		if (styleRequiresOpeningHeight(style)) {
 			openingHeightRow.classList.remove("quote-row-hidden");
 		} else {
 			openingHeightInput.value = "";
 			openingHeightRow.classList.add("quote-row-hidden");
+		}
+
+		if (supportsMaterialOptions && styleHasTrailingOrNoF(style)) {
+			outerTopMaterialOption.hidden = false;
+		} else {
+			outerTopMaterialInput.checked = false;
+			outerTopMaterialOption.hidden = true;
+		}
+
+		if (supportsMaterialOptions && styleHasF(style)) {
+			outerFixedMaterialOption.hidden = false;
+		} else {
+			outerFixedMaterialInput.checked = false;
+			outerFixedMaterialOption.hidden = true;
 		}
 	}
 
@@ -364,11 +412,11 @@
 		return openingHeight < 40 ? price : -price;
 	}
 
-	function getSModelPrice(width) {
+	function getMaterialUpgradePrice(width, weightKey) {
 		const roundedWidth = Math.ceil(width / 50) * 50;
-		const sWeightPer50 = discounts["1027S"] || 0;
+		const weightPer50 = discounts[weightKey] || 0;
 		const priceKg = discounts.price_kg || 0;
-		return roundedWidth * (sWeightPer50 / 50) * priceKg;
+		return roundedWidth * (weightPer50 / 50) * priceKg;
 	}
 
 	function applyAdjustments(basePrice, model, style, color, width, openingHeight, options) {
@@ -395,7 +443,7 @@
 			const factor = discounts[getTModelKey(style)] ?? 1;
 			finalPrice *= factor;
 			if (factor !== 1) {
-				adjustments.push({ name: "1027T T窗加價", kind: "factor", value: factor });
+				adjustments.push({ name: "內框加大", kind: "factor", value: factor });
 			}
 		}
 
@@ -413,11 +461,19 @@
 			}
 		}
 
-		if (model === "1027S") {
-			const addPrice = getSModelPrice(width);
+		if (options.outerTopMaterial) {
+			const addPrice = getMaterialUpgradePrice(width, "1310C");
 			finalPrice += addPrice;
 			if (addPrice) {
-				adjustments.push({ name: "1027S S型加價", kind: "add", value: addPrice });
+				adjustments.push({ name: "外上換中腰", kind: "add", value: addPrice });
+			}
+		}
+
+		if (options.outerFixedMaterial) {
+			const addPrice = getMaterialUpgradePrice(width, "1206B");
+			finalPrice += addPrice;
+			if (addPrice) {
+				adjustments.push({ name: "換5cm固定", kind: "add", value: addPrice });
 			}
 		}
 
@@ -547,6 +603,8 @@
 			dualWheel: dualWheelInput.checked,
 			screenMid: screenMidInput.checked,
 			windowMid: windowMidInput.checked,
+			outerTopMaterial: outerTopMaterialInput.checked,
+			outerFixedMaterial: outerFixedMaterialInput.checked,
 			pack: packInput.checked,
 		};
 

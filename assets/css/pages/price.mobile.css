@@ -64,6 +64,23 @@
 	grid-template-columns: 1fr 1fr;
 }
 
+.quote-page .quote-check {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 1rem;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+.quote-page .quote-check[hidden] {
+	display: none !important;
+}
+
+.quote-page .quote-check input {
+	flex: 0 0 auto;
+}
+
 .quote-page .quote-result {
 	width: 100%;
 	box-sizing: border-box;

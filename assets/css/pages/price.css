@@ -178,6 +178,16 @@ body.price-locked {
 	align-items: center;
 	gap: 0.45rem;
 	font-size: 1rem;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+.quote-page .quote-check[hidden] {
+	display: none !important;
+}
+
+.quote-page .quote-check input {
+	flex: 0 0 auto;
 }
 
 .quote-page .quote-actions {
