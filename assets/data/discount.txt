@@ -47,7 +47,7 @@ free_6D = 2
 1206B = 0.13
 
 # 價格 / kg
-price_kg = 300
+price_kg = 327
 
 # 價格頁密碼
 page_password = 0169
