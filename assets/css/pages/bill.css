@@ -11,13 +11,15 @@
 
 .calculator > .container {
 	display: flex;
+	font-size: 26px;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	border: 1px solid #ccc;
 	border-radius: 10px;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-	width: 30em;
+	width: min(30em, 90vw);
+	padding: 1.5rem 0;
 }
 
 .calculator > .container h2 {
@@ -32,7 +34,7 @@
 	justify-content: space-between;
 	align-items: center;
 	margin: 10px 0;
-	width: 90%;
+	width: 23em;
 }
 
 .calculator > .container .row label {
@@ -48,6 +50,7 @@
 	border: 1px solid #ccc;
 	font-size: 24px;
 	text-align: right;
+	min-width: 0;
 }
 
 .calculator > .container .row span {
@@ -61,26 +64,52 @@
 	border: 1px solid #ddd;
 }
 
+.calculator > .container .row:has(.amount-display) {
+	flex-direction: row;
+	align-items: center;
+	gap: 0.65rem;
+}
+
+.calculator > .container .row:has(.amount-display) label {
+	flex: 0 0 5em;
+}
+
 .calculator > .container .row .amount-display {
-	flex: 1;
+	--amount-line-mask: #fff;
+	position: relative;
 	display: flex;
 	flex-wrap: nowrap;
+	justify-content: flex-end;
 	align-items: center;
-	gap: 0.15rem;
-	padding: 0.75rem;
-	background: #f9f9f9;
-	border: 1px solid #ddd;
-	border-radius: 6px;
+	width: 100%;
+	gap: 0;
+	padding: 0.35rem 0;
+	background: transparent;
+	border: none;
+	border-radius: 0;
 	overflow-x: auto;
+	box-sizing: border-box;
+}
+
+.calculator > .container .row .amount-display::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 10;
+	top: 50%;
+	border-top: 2px solid #EA0000;
+	transform: translateY(-50%);
 }
 
 .calculator > .container .row .amount-cell {
+	position: relative;
+	z-index: 1;
 	display: inline-flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: center;
-	flex: 1 1 0;
-	min-width: 2.8rem;
+	justify-content: right;
+	flex: 0 0 auto;
+	min-width: 2em;
 	white-space: nowrap;
 }
 
@@ -88,38 +117,44 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	flex: 0 0 auto;
 	min-height: 1.6rem;
 	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
 	font-size: 26px;
 	font-weight: bold;
 	line-height: 1;
-	color: #1f2d3d;
+	text-align: inherit;
+	color: #1d4ed8;
 }
 
 .calculator > .container .row .amount-unit {
-	margin-left: 0.05rem;
-	font-size: 22px;
+	flex: 0 0 auto;
+	margin-left: 0rem;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	font-size: 26px;
 	font-weight: bold;
 	line-height: 1;
+	text-align: inherit;
 	color: #334155;
 }
 
-.calculator > .container .row .amount-cell-empty {
-	position: relative;
-	min-width: 2.8rem;
-}
-
-.calculator > .container .row .amount-cell-empty .amount-digit,
-.calculator > .container .row .amount-cell-empty .amount-unit {
+.calculator > .container .row .amount-cell-empty .amount-digit {
 	color: transparent;
 }
 
-.calculator > .container .row .amount-cell-empty::after {
-	content: "";
-	position: absolute;
-	left: 0.2rem;
-	right: 0.2rem;
-	top: 50%;
-	border-top: 2px solid #64748b;
-	transform: translateY(-50%);
+.calculator > .container .row .amount-cell:not(.amount-cell-empty) .amount-digit {
+	padding-left: 0rem;
+	background: var(--amount-line-mask);
+}
+
+.calculator > .container .row .amount-cell:not(.amount-cell-empty) .amount-unit {
+	margin-left: 0;
+	padding-right: 0rem;
+	background: var(--amount-line-mask);
 }

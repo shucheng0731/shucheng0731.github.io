@@ -23,17 +23,13 @@
 	const dualWheelInput = document.getElementById("dualWheel");
 	const screenMidInput = document.getElementById("screenMid");
 	const windowMidInput = document.getElementById("windowMid");
-	const outerTopMaterialInput = document.getElementById("outerTopMaterial");
-	const outerTopMaterialOption = document.getElementById("outerTopMaterialOption");
-	const outerFixedMaterialInput = document.getElementById("outerFixedMaterial");
-	const outerFixedMaterialOption = document.getElementById("outerFixedMaterialOption");
 	const packInput = document.getElementById("pack");
 	const quoteError = document.getElementById("quoteError");
 	const quoteResult = document.getElementById("quoteResult");
 	const adjustmentList = document.getElementById("adjustmentList");
 	const quoteNotice = document.getElementById("quoteNotice");
 
-	fillSelect(modelSelect, models);
+	fillSelect(modelSelect, getAvailableModels(styleSelect.value));
 	fillSelect(styleSelect, styles);
 	fillSelect(colorSelect, colors, "311");
 
@@ -46,6 +42,7 @@
 	});
 
 	styleSelect.addEventListener("change", async () => {
+		updateModelOptions();
 		updateStyleDependentFields();
 		updateDimensionPlaceholders();
 		await safeCalculateQuote();
@@ -61,8 +58,6 @@
 		dualWheelInput,
 		screenMidInput,
 		windowMidInput,
-		outerTopMaterialInput,
-		outerFixedMaterialInput,
 		packInput,
 	].forEach((input) => {
 		input.addEventListener("change", async () => {
@@ -257,6 +252,21 @@
 		return `free_${getStyleSeries(style)}`;
 	}
 
+	function getAvailableModels(style) {
+		if (styleHasTrailingOrNoF(style)) {
+			return models;
+		}
+
+		return models.filter((model) => model !== "1027S" && model !== "827S");
+	}
+
+	function updateModelOptions() {
+		const availableModels = getAvailableModels(styleSelect.value);
+		const currentModel = modelSelect.value;
+		const preferredModel = availableModels.includes(currentModel) ? currentModel : availableModels[0];
+		fillSelect(modelSelect, availableModels, preferredModel);
+	}
+
 	function styleRequiresOpeningHeight(style) {
 		return style.includes("F");
 	}
@@ -282,28 +292,12 @@
 
 	function updateStyleDependentFields() {
 		const style = styleSelect.value;
-		const model = modelSelect.value;
-		const supportsMaterialOptions = model === "1027S" || model === "1027T";
 
 		if (styleRequiresOpeningHeight(style)) {
 			openingHeightRow.classList.remove("quote-row-hidden");
 		} else {
 			openingHeightInput.value = "";
 			openingHeightRow.classList.add("quote-row-hidden");
-		}
-
-		if (supportsMaterialOptions && styleHasTrailingOrNoF(style)) {
-			outerTopMaterialOption.hidden = false;
-		} else {
-			outerTopMaterialInput.checked = false;
-			outerTopMaterialOption.hidden = true;
-		}
-
-		if (supportsMaterialOptions && styleHasF(style)) {
-			outerFixedMaterialOption.hidden = false;
-		} else {
-			outerFixedMaterialInput.checked = false;
-			outerFixedMaterialOption.hidden = true;
 		}
 	}
 
@@ -412,8 +406,10 @@
 		return openingHeight < 40 ? price : -price;
 	}
 
-	function getMaterialUpgradePrice(width, weightKey) {
-		const roundedWidth = Math.ceil(width / 50) * 50;
+	function getMaterialUpgradePrice(style, width, weightKey) {
+		const config = getPriceConfig(style);
+		const effectiveWidth = Math.max(width, config.baseWidth);
+		const roundedWidth = Math.ceil(effectiveWidth / 50) * 50;
 		const weightPer50 = discounts[weightKey] || 0;
 		const priceKg = discounts.price_kg || 0;
 		return roundedWidth * (weightPer50 / 50) * priceKg;
@@ -461,19 +457,12 @@
 			}
 		}
 
-		if (options.outerTopMaterial) {
-			const addPrice = getMaterialUpgradePrice(width, "1310C");
+		if ((model === "1027S" || model === "827S") && styleHasTrailingOrNoF(style)) {
+			const materialKey = model === "827S" ? "8210A" : "1310C";
+			const addPrice = getMaterialUpgradePrice(style, width, materialKey);
 			finalPrice += addPrice;
 			if (addPrice) {
 				adjustments.push({ name: "外上換中腰", kind: "add", value: addPrice });
-			}
-		}
-
-		if (options.outerFixedMaterial) {
-			const addPrice = getMaterialUpgradePrice(width, "1206B");
-			finalPrice += addPrice;
-			if (addPrice) {
-				adjustments.push({ name: "換5cm固定", kind: "add", value: addPrice });
 			}
 		}
 
@@ -603,8 +592,6 @@
 			dualWheel: dualWheelInput.checked,
 			screenMid: screenMidInput.checked,
 			windowMid: windowMidInput.checked,
-			outerTopMaterial: outerTopMaterialInput.checked,
-			outerFixedMaterial: outerFixedMaterialInput.checked,
 			pack: packInput.checked,
 		};
 

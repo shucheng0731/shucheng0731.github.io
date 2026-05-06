@@ -5,6 +5,7 @@ const amountDisplay = document.getElementById("chineseAmount");
 const amountCells = Array.from(amountDisplay.querySelectorAll(".amount-cell"));
 
 const TAX_RATE = 0.05;
+const MAX_GROSS_AMOUNT = 999999999;
 const MAX_DIGITS = amountCells.length;
 const CHINESE_DIGITS = ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"];
 
@@ -16,9 +17,13 @@ function sanitizeAmount(value) {
 	return Math.floor(value);
 }
 
+function clampGrossAmount(value) {
+	return Math.min(sanitizeAmount(value), MAX_GROSS_AMOUNT);
+}
+
 function setAmountDisplay(amount) {
 	const safeAmount = sanitizeAmount(amount);
-	const digits = String(safeAmount).slice(0, MAX_DIGITS).padStart(MAX_DIGITS, "0");
+	const digits = String(safeAmount).slice(-MAX_DIGITS).padStart(MAX_DIGITS, "0");
 	let firstVisibleIndex = digits.search(/[1-9]/);
 
 	if (firstVisibleIndex === -1) {
@@ -36,7 +41,7 @@ function setAmountDisplay(amount) {
 		digitElement.textContent = isLeadingBlank ? "" : CHINESE_DIGITS[Number(digit)];
 	});
 
-	amountDisplay.setAttribute("aria-label", `gross amount ${safeAmount}`);
+	amountDisplay.setAttribute("aria-label", `總計新臺幣 ${safeAmount} 元`);
 }
 
 function clearFromNet() {
@@ -61,12 +66,24 @@ function calculateFromNet() {
 
 	const safeNet = sanitizeAmount(net);
 	const tax = Math.round(safeNet * TAX_RATE);
-	const gross = safeNet + tax;
+	const rawGross = safeNet + tax;
+	const safeGross = clampGrossAmount(rawGross);
+
+	if (safeGross !== rawGross) {
+		const cappedNet = Math.round(safeGross / (1 + TAX_RATE));
+		const cappedTax = safeGross - cappedNet;
+
+		netInput.value = cappedNet ? String(cappedNet) : "";
+		taxOutput.textContent = String(cappedTax);
+		grossInput.value = String(safeGross);
+		setAmountDisplay(safeGross);
+		return;
+	}
 
 	netInput.value = safeNet ? String(safeNet) : "";
 	taxOutput.textContent = String(tax);
-	grossInput.value = String(gross);
-	setAmountDisplay(gross);
+	grossInput.value = safeGross ? String(safeGross) : "";
+	setAmountDisplay(safeGross);
 }
 
 function calculateFromGross() {
@@ -77,17 +94,18 @@ function calculateFromGross() {
 		return;
 	}
 
-	const safeGross = sanitizeAmount(gross);
+	const safeGross = clampGrossAmount(gross);
 	const net = Math.round(safeGross / (1 + TAX_RATE));
 	const tax = safeGross - net;
 
 	grossInput.value = safeGross ? String(safeGross) : "";
-	netInput.value = String(net);
+	netInput.value = net ? String(net) : "";
 	taxOutput.textContent = String(tax);
 	setAmountDisplay(safeGross);
 }
 
 netInput.addEventListener("input", calculateFromNet);
 grossInput.addEventListener("input", calculateFromGross);
+grossInput.setAttribute("max", String(MAX_GROSS_AMOUNT));
 
 setAmountDisplay(0);
