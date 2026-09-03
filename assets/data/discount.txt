@@ -1,6 +1,6 @@
 # 型號折扣
-model_1027 = 0.84
-model_827 = 0.78
+model_1027 = 0.91
+model_827 = 0.85
 
 # 內框加大
 model_T_2D = 1.15
@@ -48,7 +48,7 @@ free_6D = 2
 8210A = 0.52
 
 # 價格 / kg
-price_kg = 327
+price_kg = 310
 
 # 價格頁密碼
 page_password = 0169
